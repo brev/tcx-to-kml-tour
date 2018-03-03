@@ -1,5 +1,11 @@
 CREATE TABLE activity (
   id TEXT NOT NULL,
+  curr_tkpt_alt_feet REAL,
+  curr_tkpt_dist_miles REAL,
+  curr_tkpt_lat REAL,
+  curr_tkpt_lng REAL,
+  curr_tkpt_seq INTEGER NOT NULL,
+  curr_tkpt_time TEXT NOT NULL,
   filename TEXT NOT NULL,
   tkpt0_time TEXT NOT NULL,
   PRIMARY KEY(id)
