@@ -1,3 +1,4 @@
 data.db
+kml/
 node_modules/
-tcx/*.tcx
+tcx/

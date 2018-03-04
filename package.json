@@ -3,8 +3,12 @@
   "version": "0.0.1",
   "author": "",
   "dependencies": {
-    "sqlite3": "3.1.13",
-    "tcx-js": "0.1.2"
+    "geojson": "^0.5.0",
+    "npm": "^5.7.1",
+    "sqlite3": "^3.1.13",
+    "strxml": "^1.0.0",
+    "tcx-js": "^0.1.2",
+    "tokml": "^0.4.0"
   },
   "description": "britt-run",
   "devDependencies": {},

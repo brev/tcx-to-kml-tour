@@ -6,7 +6,8 @@ CREATE TABLE activity (
   curr_tkpt_lng REAL,
   curr_tkpt_seq INTEGER NOT NULL,
   curr_tkpt_time TEXT NOT NULL,
-  filename TEXT NOT NULL,
+  file_kml TEXT NOT NULL,
+  file_tcx TEXT NOT NULL,
   tkpt0_time TEXT NOT NULL,
   PRIMARY KEY(id)
 );

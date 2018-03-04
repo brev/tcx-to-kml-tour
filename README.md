@@ -3,6 +3,7 @@
 
 Put `.TCX` files into `tcx/` directory.
 
+
 ### Database
 
 Initialize fresh & clean sqlite3 database:
@@ -11,6 +12,7 @@ Initialize fresh & clean sqlite3 database:
 cat schema.sql | sqlite3 data.db
 ```
 
+
 ### Import
 
 Import TCX files from `./tcx/` directory into sqlite3 database:
@@ -18,6 +20,18 @@ Import TCX files from `./tcx/` directory into sqlite3 database:
 ```shell
 node import.js
 ```
+
+Confirm the import worked:
+
+```shell
+sqlite3 data.db  
+# select * from activity;
+# select * from trackpoint;
+
+ls kml/*.kml
+# see list of associated kml files
+```
+
 
 ### Calculations
 
