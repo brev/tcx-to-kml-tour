@@ -1,7 +1,7 @@
 
 ### Data
 
-Put `.TCX` files into `tcx/` directory.
+Put source `.TCX` files into `tcx/` directory.
 
 
 ### Database
@@ -15,7 +15,10 @@ cat schema.sql | sqlite3 data.db
 
 ### Import
 
-Import TCX files from `./tcx/` directory into sqlite3 database:
+Run import script to:
+* Import `TCX` files from `./tcx/` directory into sqlite3 database.
+* Export `KML` files into  `./kml/` directory.
+* Export `KML` Touring files into `./tour/` directory.
 
 ```shell
 node import.js
@@ -28,8 +31,8 @@ sqlite3 data.db
 # select * from activity;
 # select * from trackpoint;
 
-ls kml/*.kml
-# see list of associated kml files
+ls kml/*.kml  # see list of kml files
+ls tour/*.kml  # see list of kml Touring files
 ```
 
 

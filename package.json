@@ -5,6 +5,8 @@
   "dependencies": {
     "geojson": "^0.5.0",
     "npm": "^5.7.1",
+    "point-geometry": "^0.1.0",
+    "simplify-geometry": "0.0.2",
     "sqlite3": "^3.1.13",
     "strxml": "^1.0.0",
     "tcx-js": "^0.1.2",
@@ -15,6 +17,7 @@
   "license": "",
   "main": "index.js",
   "scripts": {
+    "clean": "rm data.db && touch data.db && rm -Rf kml/ && rm -Rf tour/",
     "test": "echo \"Error: no test specified\" && exit 1"
   }
 }

@@ -2,6 +2,8 @@
 const fs = require('fs')
 const toGeoJson = require('geojson')
 const path = require('path')
+const Point = require('point-geometry')
+const simplify = require('simplify-geometry')
 const sqlite3 = require('sqlite3')
 const strXml = require('strxml')
 const tcxDom = require('tcx-js')
@@ -11,8 +13,13 @@ const toKml = require('tokml')
 const db = new sqlite3.Database('data.db')
 const dirKml = 'kml'
 const dirTcx = 'tcx'
-const files = fs.readdirSync(dirTcx)
+const dirTour = 'tour'
+const filesTcx = fs.readdirSync(dirTcx)
 const ids = {}
+const nsKml = {
+  'xmlns': 'http://www.opengis.net/kml/2.2',
+  'xmlns:gx': 'http://www.google.com/kml/ext/2.2',
+}
 const optsTcx = {alt_feet: true, dist_miles: true, elapsed: false}
 const sqlAct = `
   INSERT INTO activity VALUES (
@@ -26,27 +33,87 @@ const sqlTrack = `
     $activity_id, $alt_feet, $dist_miles, $lat, $lng, $seq, $time
   )
 `
+const {tag} = strXml
+const xmlHead = '<?xml version="1.0" encoding="UTF-8"?>'
+
 
 // functions
 
+const calculateHeading = (currPoint, nextPoint) => {
+  const angleRad = nextPoint.angleTo(currPoint)
+  const normalize = (angle) => (angle < 0) ? (angle + 360) : angle
+  const angleDeg = normalize(rad2deg(angleRad))
+  const angleMap = Number.parseInt(normalize(0 - (angleDeg - 90)), 10)
+  console.log(angleRad, angleDeg, angleMap)
+  return angleMap
+}
+
+const deg2rad = (degs) => {
+  return degs * (Math.PI / 180);
+}
+
 const exportKml = (geos, fullKmlFile) => {
-  console.log('  generating kml:', fullKmlFile)
   const geoJsonOpts = {Point: ['lat', 'lng']}
   const kmlOpts = {timestamp: 'time'}
+  const kmlPath = path.join(dirKml, fullKmlFile)
   const geojson = toGeoJson.parse(geos, geoJsonOpts)
   const kml = toKml(geojson, kmlOpts)
-  fs.writeFileSync(path.join(dirKml, fullKmlFile), kml)
+  console.log('  generating kml:', kmlPath)
+  fs.writeFileSync(kmlPath, kml)
+}
+
+const exportTour = (geos, fullKmlFile) => {
+  const coords = geos.map((geo) => [geo['lng'], geo['lat']])
+  // const simples = simplify(coords, 0.00009)
+  const simples = simplify(coords, 0.0005)
+  console.log(simples, simples.length)
+  const tourPath = path.join(dirTour, fullKmlFile)
+  let currPoint = new Point(geos[0]['lng'], simples[0]['lat'])
+  let flyTos, kmlTourXml, nextPoint
+  flyTos = simples.map((geo) => {
+    let heading
+    nextPoint = new Point(geo[0], geo[1])
+    heading = calculateHeading(currPoint, nextPoint) || 0
+    currPoint = nextPoint
+    return tag('gx:FlyTo', [
+      tag('gx:duration', '2'),
+      tag('gx:flyToMode', 'smooth'),
+      tag('Camera', [
+        tag('altitude', '30'),
+        tag('heading', heading.toString()),
+        tag('longitude', geo[0].toString()),
+        tag('latitude', geo[1].toString()),
+        // tag('range', '30'),
+        tag('tilt', '66'),
+      ].join('')),
+    ].join(''))
+  })
+  kmlTourXml = xmlHead +
+    tag('kml', nsKml, tag('Document', [
+      tag('name', 'A tour and features'),
+      tag('open', '1'),
+      tag('gx:Tour', [
+        tag('name', 'Play me'),
+        tag('gx:Playlist', flyTos.join('')),
+      ].join('')),
+    ].join('')))
+  console.log('  generating tour:', tourPath)
+  fs.writeFileSync(tourPath, kmlTourXml)
+}
+
+const rad2deg = (rads) => {
+  return rads * (180 / Math.PI);
 }
 
 const saveActivity = (parser, tcxFile, kmlFile) => {
+  const {activity, curr_tkpt} = parser
+  const stmtAct = db.prepare(sqlAct)
   console.log(
     'activity:',
     parser['activity']['id'],
     tcxFile,
     parser['activity']['trackpoints'].length
   )
-  const {activity, curr_tkpt} = parser
-  const stmtAct = db.prepare(sqlAct)
   stmtAct.run({
     $id: activity['id'],
     $curr_tkpt_alt_feet: curr_tkpt['alt_feet'],
@@ -112,14 +179,17 @@ const verifyTrackpointGeo = (trackpoint) => {
 // main
 
 db.run("BEGIN TRANSACTION");
-try { fs.mkdirSync(dirKml) } catch(error) {}
+try {
+  fs.mkdirSync(dirKml)
+  fs.mkdirSync(dirTour)
+} catch(error) {}
 
 // import fresh tcx data files into sqlite
-files.forEach((file) => {
+filesTcx.slice(11,12).forEach((file) => {
   const fullTcxPath = path.join(dirTcx, file)
   const geos = []
   let parser = new tcxDom.Parser(optsTcx)
-  let fullKmlFile
+  let fullKmlFile, kmlTour
 
   parser.parse_file(fullTcxPath)
   if(! verifyActivityTrackpoints(parser)) {
@@ -144,9 +214,10 @@ files.forEach((file) => {
     geos.push(trackpoint)
   })
   exportKml(geos, fullKmlFile)
-  console.log(' ')
+  exportTour(geos, fullKmlFile)
+  console.log()
 })
 
 db.run("COMMIT");
 db.close()
-console.log('Done processing', files.length, 'TCX activity files.')
+console.log('Done processing', filesTcx.length, 'TCX activity files.')
