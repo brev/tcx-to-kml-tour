@@ -1,6 +1,6 @@
 # TCX to KML Tour
 
-<video src="meta/demo.gif"></video>
+![Demo of KML Tour movie, created in Google Earth Desktop](meta/demo.gif)
 
 Converts [Garmin `.tcx` activity files](https://en.wikipedia.org/wiki/Training_Center_XML)
 into `.kml` files for touring or movie-making in
