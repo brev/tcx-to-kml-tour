@@ -1,6 +1,6 @@
 # TCX to KML Tour
 
-<video src="meta/demo.webm"></video>
+<video src="meta/demo.gif"></video>
 
 Converts [Garmin `.tcx` activity files](https://en.wikipedia.org/wiki/Training_Center_XML)
 into `.kml` files for touring or movie-making in
