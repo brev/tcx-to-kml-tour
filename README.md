@@ -1,11 +1,13 @@
 # TCX to KML Tour
 
-![Demo of KML Tour movie, created in Google Earth Desktop](meta/demo.gif)
-
 Converts Garmin [`.tcx`](https://en.wikipedia.org/wiki/Training_Center_XML)
 activity tracking files into
 [`.kml`](https://developers.google.com/kml/documentation/touring) touring files
 for [Google Earth Desktop](https://www.google.com/earth/desktop/) renderings.
+
+![Demo of KML Tour movie, created in Google Earth Desktop](meta/demo.gif)
+
+[Full Demo Video](https://youtu.be/BgaDL1PvQsM)
 
 
 ## Usage
