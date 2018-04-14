@@ -1,9 +1,3 @@
-/**
- *
- */
-
-/* eslint-disable no-console, valid-jsdoc */
-
 // MODULES
 const cities = require('cities')
 const fs = require('fs')
@@ -32,7 +26,8 @@ const xmlHead = '<?xml version="1.0" encoding="UTF-8"?>'
 // FUNCTIONS
 
 /**
- *
+ * Convert distance between two points into an associated time duration value,
+ *  intended for rendering camera movement speed.
  */
 const calculateDuration = (prevPoint, nextPoint) => {
   const distance = nextPoint.dist(prevPoint)
@@ -42,7 +37,8 @@ const calculateDuration = (prevPoint, nextPoint) => {
 }
 
 /**
- *
+ * Figure out direction angle in which to aim the rendering camera, in order to
+ *  smoothly continue to next point in path.
  */
 const calculateHeading = (prevPoint, nextPoint) => {
   const angleRad = nextPoint.angleTo(prevPoint)
@@ -53,7 +49,7 @@ const calculateHeading = (prevPoint, nextPoint) => {
 }
 
 /**
- *
+ * Create nice text overlay image for metadata display over top of rendering.
  */
 const exportPng = (parser, fullPngFile) => {
   const {activity, curr_tkpt, geo} = parser
@@ -91,16 +87,16 @@ const exportPng = (parser, fullPngFile) => {
       style: style.small,
     },
   ]
-
   const images = content.map((img) => textToPng(img['text'], img['style']))
   console.log('  generating png:', pngPath)
   mergeImg(images, {direction: true}).then((img) => img.write(pngPath))
 }
 
 /**
- *
+ * Write out XML markup for KML touring output file.
  */
 const exportTour = (trackpoints, fullKmlFile, geo) => {
+  const simplifyFactor = 0.00004
   const overlayAttrs = {
     x: '0.066',
     y: '0.933',
@@ -109,7 +105,7 @@ const exportTour = (trackpoints, fullKmlFile, geo) => {
   }
   const latlon = trackpoints.map((trackpt) => [trackpt['lng'], trackpt['lat']])
   const lineString = latlon.map((coord) => `${coord[0]},${coord[1]}`).join(' ')
-  const placemarks = simplify(latlon, 0.00004)
+  const placemarks = simplify(latlon, simplifyFactor)
   const pngPath = fullKmlFile.replace(/\.kml/, '.png')
   const tourPath = path.join(dirTour, fullKmlFile)
   let prevPoint = new Point(placemarks[0][0], placemarks[0][1])
@@ -163,14 +159,15 @@ const exportTour = (trackpoints, fullKmlFile, geo) => {
 }
 
 /**
- *
+ * Convert Radians to Degrees
  */
 const rad2deg = (rads) => {
   return rads * (180 / Math.PI);
 }
 
 /**
- *
+ * Modify TCX input data to fit our needs before converting to output KML
+ * format.
  */
 const shapeData = (parser) => {
   const {activity, curr_tkpt} = parser
@@ -209,14 +206,7 @@ const shapeData = (parser) => {
 }
 
 /**
- *
- */
-const verifyActivityTrackpoints = (parser) => {
-  return parser['activity']['trackpoints'].length > 0
-}
-
-/**
- *
+ * Verify that a geo point lat/lon pair exist.
  */
 const verifyTrackpointGeo = (trackpoint) => {
   return (!(
@@ -235,7 +225,7 @@ filesTcx.forEach((file, index) => {
   let fullKmlFile, fullPngFile
 
   parser.parse_file(fullTcxPath)
-  if(! verifyActivityTrackpoints(parser)) {
+  if(parser['activity']['trackpoints'].length <= 0) {
     console.log("\n\n!!! Skipping empty file: ", file, "\n\n")
     return
   }

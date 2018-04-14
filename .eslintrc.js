@@ -121,6 +121,7 @@ module.exports = {
         "no-caller": "error",
         "no-catch-shadow": "error",
         "no-confusing-arrow": "off",
+        "no-console": "off",
         "no-continue": "error",
         "no-div-regex": "error",
         "no-duplicate-imports": "error",
@@ -286,7 +287,7 @@ module.exports = {
             "error",
             "never"
         ],
-        "valid-jsdoc": "error",
+        "valid-jsdoc": "off",
         "vars-on-top": "error",
         "wrap-iife": "error",
         "wrap-regex": "error",

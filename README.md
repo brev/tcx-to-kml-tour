@@ -2,12 +2,15 @@
 
 ![Demo of KML Tour movie, created in Google Earth Desktop](meta/demo.gif)
 
-Converts [Garmin `.tcx` activity files](https://en.wikipedia.org/wiki/Training_Center_XML)
-into `.kml` files for touring or movie-making in
-[Google Earth Desktop](https://www.google.com/earth/desktop/).
+Converts Garmin [`.tcx`](https://en.wikipedia.org/wiki/Training_Center_XML)
+activity tracking files into
+[`.kml`](https://developers.google.com/kml/documentation/touring) touring files
+for [Google Earth Desktop](https://www.google.com/earth/desktop/) renderings.
 
 
-## Setup
+## Usage
+
+### Setup
 
 Requirements:
 * `git`
@@ -19,8 +22,7 @@ cd tcx-to-kml-tour
 npm install
 ```
 
-
-## Input
+### Input
 
 Reads your `.tcx` activity files from `tcx/` directory:
 
@@ -41,15 +43,13 @@ Reads your `.tcx` activity files from `tcx/` directory:
             ...
 ```
 
-
-## Convert
+### Conversion
 
 ```shell
 node tcx-to-kml-tour.js
 ```
 
-
-## Output
+### Output
 
 Writes `.kml` touring and `.png` overlay files into `tour/` directory:
 

@@ -1,12 +1,13 @@
 {
   "name": "tcx-to-kml-tour",
-  "description": "Convert Garmin TCX Activity files into KML Touring files for Google Earth movies.",
+  "description": "Convert Garmin TCX Activity files into KML Touring files for Google Earth renderings.",
   "version": "0.0.1",
   "author": "Brev Patterson <me@brev.name>",
   "dependencies": {
     "cities": "^1.1.2",
     "merge-img": "^2.1.2",
     "moment-mini": "^2.19.4",
+    "npm": "^5.8.0",
     "point-geometry": "^0.1.0",
     "simplify-geometry": "0.0.2",
     "strxml": "^1.0.0",
@@ -16,7 +17,7 @@
   "devDependencies": {
     "eslint": "^4.19.1"
   },
-  "license": "",
+  "license": "MIT",
   "main": "tcx-to-kml-tour.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
