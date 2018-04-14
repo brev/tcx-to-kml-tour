@@ -1,1 +1,4 @@
 node_modules/
+tcx/*.tcx
+tour/*.kml
+tour/*.png

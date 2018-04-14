@@ -45,8 +45,14 @@ Reads your `.tcx` activity files from `tcx/` directory:
 
 ### Conversion
 
-```shell
-node tcx-to-kml-tour.js
+```bash
+$ node tcx-to-kml-tour.js
+
+Ran 6.43 mi on 4_26_15.tcx
+  generating tour: tour/2015-04-26T15:57:53+00:00.kml
+  generating png: tour/2015-04-26T15:57:53+00:00.png
+
+Done processing 1  TCX activity files.
 ```
 
 ### Output

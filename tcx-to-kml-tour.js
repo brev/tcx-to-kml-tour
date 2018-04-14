@@ -1,4 +1,17 @@
+/**
+ * TCX to KML Tour.
+ *
+ * Converts Garmin TCX activity tracking files into KML touring files for
+ *  Google Earth Desktop renderings.
+ *
+ * @author Brev Patterson <me@brev.name>
+ * @copyright (c) 2018 Brev Patterson
+ * @license MIT
+ */
+
+
 // MODULES
+
 const cities = require('cities')
 const fs = require('fs')
 const mergeImg = require('merge-img')
@@ -10,7 +23,9 @@ const {tag, tagClose} = require('strxml')
 const tcxDom = require('tcx-js')
 const textToPng = require('text2png')
 
+
 // VARS
+
 const activityIds = {}
 const dirTcx = 'tcx'
 const dirTour = 'tour'
@@ -20,6 +35,7 @@ const nsKml = {
   'xmlns:gx': 'http://www.google.com/kml/ext/2.2',
 }
 const optsTcx = {alt_feet: true, dist_miles: true, elapsed: false}
+const rad2deg = (rads) => rads * (180 / Math.PI)
 const xmlHead = '<?xml version="1.0" encoding="UTF-8"?>'
 
 
@@ -124,7 +140,7 @@ const exportTour = (trackpoints, fullKmlFile, geo) => {
         tag('longitude', placemark[0].toString()),
         tag('latitude', placemark[1].toString()),
         tag('range', '55'),
-        tag('tilt', '77'),  // 4x3 => 70.  16:9 => 77.
+        tag('tilt', '77'),  // 4:3 aspect => 70.  16:9 aspect => 77.
       ].join('')),
     ].join(''))
   })
@@ -156,13 +172,6 @@ const exportTour = (trackpoints, fullKmlFile, geo) => {
     ].join('')))
   console.log('  generating tour:', tourPath)
   fs.writeFileSync(tourPath, kmlTourXml)
-}
-
-/**
- * Convert Radians to Degrees
- */
-const rad2deg = (rads) => {
-  return rads * (180 / Math.PI);
 }
 
 /**
